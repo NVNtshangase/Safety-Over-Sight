@@ -29,11 +29,10 @@ app = Flask(__name__)
 load_dotenv()  # Load environment variables from .env file
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
-app.config['SECRET_KEY'] = 'sedrgyuhjbgcftygufty3454guhftyugtfy6gyuh'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-app.config['RECAPTCHA_PUBLIC_KEY'] = '6LfKg1kqAAAAAMD2WHRzPQuqofKxvDG5GqlCZtVg'
-app.config['RECAPTCHA_PRIVATE_KEY'] = '6LfKg1kqAAAAALjYl197cM1F3RPmr5dGziPW2Mao'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+app.config['RECAPTCHA_PUBLIC_KEY'] = os.getenv('RECAPTCHA_PUBLIC_KEY')
+app.config['RECAPTCHA_PRIVATE_KEY'] = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
 db.init_app(app)
 

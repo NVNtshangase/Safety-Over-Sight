@@ -30,7 +30,8 @@ load_dotenv()  # Load environment variables from .env file
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 app.config['SECRET_KEY'] = 'sedrgyuhjbgcftygufty3454guhftyugtfy6gyuh'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LfKg1kqAAAAAMD2WHRzPQuqofKxvDG5GqlCZtVg'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LfKg1kqAAAAALjYl197cM1F3RPmr5dGziPW2Mao'
 

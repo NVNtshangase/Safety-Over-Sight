@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - SoS{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+            {% for category, message in messages %}
+                <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+<section class="hero">
+    <h1>Welcome to SoS</h1>
+    <p>Ensuring student safety and security through smart tracking and notifications.</p>
+</section>
+
+<section class="features">
+    <div class="feature" id="feature1">
+        <img src="https://img.icons8.com/ios/50/000000/map-marker.png" alt="Real-time Tracking Icon">
+        <h3>Real-time Tracking</h3>
+        <p>Track student movements as they enter and leave the school premises and bus stops.</p>
+    </div>
+    <div class="feature" id="feature2">
+        <img src="https://img.icons8.com/ios-filled/50/000000/appointment-reminders.png" alt="Instant Notifications Icon">
+
+        <h3>Instant Notifications</h3>
+        <p>Parents receive instant notifications if their child does not arrive at school on time.</p>
+    </div>
+    <div class="feature" id="feature3">
+        <img src="https://img.icons8.com/ios-filled/50/000000/privacy.png" alt="Secure System Icon">
+
+        <h3>Secure System</h3>
+        <p>Our system ensures data security and privacy for all users.</p>
+    </div>
+</section>
+
+<script>
+    // JavaScript to add sliding effect to feature containers
+    document.addEventListener('DOMContentLoaded', () => {
+        const features = document.querySelectorAll('.feature');
+        
+        features.forEach((feature, index) => {
+            setTimeout(() => {
+                feature.classList.add('slide-in');
+            }, index * 600);
+        });
+    });
+</script>
+
+
+{% endblock %}

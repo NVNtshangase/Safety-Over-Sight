@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+            {% for category, message in messages %}
+                <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    
+    <h2 style="text-align: center; color: #1f4d7a;">Sign Up</h2>
+    
+    <form method="POST" style="margin-top: 20px;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 10px;">
+                    <label for="username" style="font-weight: bold; color: #333;">Username:</label>
+                </td>
+                <td style="padding: 10px;">
+                    <input type="text" name="username" required value="{{ username|default('') }}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">
+                    <label for="password" style="font-weight: bold; color: #333;">Password:</label>
+                </td>
+                <td style="padding: 10px; position: relative;">
+                    <input type="password" id="password" name="password" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    <i class="far fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">
+                    <label for="confirm_password" style="font-weight: bold; color: #333;">Confirm Password:</label>
+                </td>
+                <td style="padding: 10px; position: relative;">
+                    <input type="password" id="confirm_password" name="confirm_password" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    <i class="far fa-eye" id="toggleConfirmPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">
+                    <label style="font-weight: bold; color: #333;">Role:</label>
+                </td>
+                <td style="padding: 10px;">
+                    <label>
+                        <input type="radio" name="role" value="Parent" required {% if role == 'Parent' %}checked{% endif %}>
+                        Parent
+                    </label>
+                    <label style="margin-left: 20px;">
+                        <input type="radio" name="role" value="School Authority" {% if role == 'School Authority' %}checked{% endif %}>
+                        School Authority
+                    </label>
+                </td>
+            </tr>
+        </table>
+        
+        <button type="submit" style="width: 100%; padding: 10px 15px; color: white; background-color: #1f4d7a; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">Sign Up</button>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='my_javascript.js') }}"></script>
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordField = document.getElementById('password');
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+    });
+
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+        const confirmPasswordField = document.getElementById('confirm_password');
+        const type = confirmPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        confirmPasswordField.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>
+{% endblock %}

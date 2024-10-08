@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+            {% for category, message in messages %}
+                <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    
+    <h2 style="text-align: center; color: #1f4d7a;">Login</h2>
+    
+    <form method="POST" style="margin-top: 20px;">
+        {{ form.hidden_tag() }}
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 10px;">
+                    <label for="username" style="font-weight: bold; color: #333;">Username:</label>
+                </td>
+                <td style="padding: 10px;">
+                    <input type="text" id="username" name="username" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">
+                    <label for="password" style="font-weight: bold; color: #333;">Password:</label>
+                </td>
+                <td style="padding: 10px; position: relative;">
+                    <input type="password" id="password" name="password" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    <i class="far fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Add reCAPTCHA -->
+        <div style="margin-top: 20px;">
+            {{ form.recaptcha }}
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 10px 15px; color: white; background-color: #1f4d7a; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">Login</button>
+    </form>
+    
+    <div style="margin-top: 20px; text-align: center;">
+        <button onclick="toggleForgotPassword()" style="background: none; border: none; color: #008CBA; cursor: pointer; text-decoration: underline;">Forgot Password?</button>
+    </div>
+
+    <!-- Forgot Password section (hidden by default) -->
+    <div id="forgot-password-section" style="display: none; margin-top: 20px;">
+        <form action="{{ url_for('forgot_password') }}" method="POST">
+            <label for="forgot-username" style="font-weight: bold;">Enter your email address:</label>
+            <input type="text" id="forgot-username" name="username" placeholder="Email address" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <input type="submit" value="Send Reset Link" style="width: 100%; padding: 10px; color: white; background-color: #1f4d7a; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+        </form>
+    </div>
+
+    <p style="text-align: center; margin-top: 20px;">Don't have an account? 
+        <a href="{{ url_for('signup') }}" style="color: #1f4d7a; text-decoration: none;">Sign up here</a>
+    </p>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="{{ url_for('static', filename='my_javascript.js') }}"></script>
+<script>
+    // Function to toggle the forgot password section
+    function toggleForgotPassword() {
+        const forgotPasswordSection = document.getElementById('forgot-password-section');
+        forgotPasswordSection.style.display = forgotPasswordSection.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordField = document.getElementById('password');
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>
+{% endblock %}

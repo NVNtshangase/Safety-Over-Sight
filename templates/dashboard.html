@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+            {% for category, message in messages %}
+                <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% if user.role == 'Parent' %}
+        <h2>Parent Dashboard</h2>
+        {% if parent and parent.Parent_Name %}
+            <p>Welcome, {{ parent.Parent_Name }}!</p>
+        {% else %}
+            <p style="color: red; font-weight: bold;">Please update your profile.</p>
+        {% endif %}
+    {% elif user.role == 'School Authority' %}
+        <h2>School Authority Dashboard</h2>
+        {% if authority and authority.Authority_Name %}
+            <p>Welcome, {{ authority.Authority_Name }}!</p>
+        {% else %}
+            <p style="color: red; font-weight: bold;">Please update your profile.</p>
+        {% endif %}
+    {% else %}
+        <h2>Unauthorized Access</h2>
+        <p style="color: red; font-weight: bold;">You do not have permission to access this dashboard.</p>
+    {% endif %}
+
+
+    {% if user.role == 'Parent' %}
+    <div class="dashboard">
+        <div class="tile animate__animated animate__fadeIn" onclick="location.href='{{ url_for('my_students') }}'">
+            <h3> Student Management</h3>
+            <p>View, add, manage your student's data.</p>
+        </div>
+        <div class="tile animate__animated animate__fadeIn" onclick="location.href='{{ url_for('notifications') }}'">
+            <h3>Notifications</h3>
+            <p>Check important notifications.</p>
+        </div>
+        <div class="tile animate__animated animate__fadeIn" onclick="location.href='{{ url_for('user_profile') }}'">
+            <h3>Profile</h3>
+            <p>Manage your profile</p>
+        </div>
+    </div>
+    {% elif user.role == 'School Authority' %}
+    <div class="dashboard-tiles">
+        <div class="tile">
+            <a href="{{ url_for('checkpoints') }}">
+                <h3>Manage Checkpoints</h3>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="{{ url_for('user_profile') }}">
+                <h3>Profile</h3>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="{{ url_for('scan_checkpoints') }}">
+                <h3>Scanning</h3>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="{{ url_for('view_parents') }}">
+                <h3>Manage Users</h3>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+<script>
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById("welcomeMessage").innerText = randomQuote;
+
+    // Modal functions
+    function openModal() {
+        document.getElementById("notificationModal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("notificationModal").style.display = "none";
+    }
+</script>
+
+<style>
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+    }
+    
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+<script src="{{ url_for('static', filename='my_javascript.js') }}"></script>
+{% endblock %}

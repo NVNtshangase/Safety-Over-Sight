@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+            {% for category, message in messages %}
+                <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    <h1 style="text-align: center; color: #4CAF50;">{{ role }} Profile</h1>
+    
+    {% if profile %}
+        {% if role == 'Parent' %}
+            <p><strong>Name:</strong> {{ profile.Parent_Name }} {{ profile.Parent_Surname }}</p>
+            <p><strong>Email:</strong> {{ profile.Parent_EmailAddress }}</p>
+            <p><strong>Cell Phone Number:</strong> {{ profile.Parent_CellPhoneNumber }}</p>
+            <div class="action-links" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <a class="back-link" href="{{ url_for('dashboard') }}" style="color: #4CAF50; text-decoration: underline;">Back</a>
+                
+                <!-- Form for deleting account -->
+                <form action="{{ url_for('delete_account') }}" method="POST" style="display: inline;">
+                    <button type="submit" class="delete-link" style="color: #C62828; background: none; border: none; text-decoration: underline; cursor: pointer;">
+                        Delete Account
+                    </button>
+                </form>
+            </div>
+        
+        {% elif role == 'School Authority' %}
+            <p><strong>Name:</strong> {{ profile.Authority_Name }} {{ profile.Authority_Surname }}</p>
+            <p><strong>Email:</strong> {{ profile.Authority_EmailAddress }}</p>
+            <p><strong>Role:</strong> {{ profile.Authority_Role }}</p>
+            <div class="action-links" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <a class="back-link" href="{{ url_for('dashboard') }}" style="color: #4CAF50; text-decoration: underline;">Back</a>
+                
+                <!-- Form for deleting account -->
+                <form action="{{ url_for('delete_account') }}" method="POST" style="display: inline;">
+                    <button type="submit" class="delete-link" style="color: #C62828; background: none; border: none; text-decoration: underline; cursor: pointer;">
+                        Delete Account
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+        
+    {% else %}
+        <p>No profile information available.</p>
+        <a class="back-link" href="{{ url_for('home') }}" style="color: #4CAF50; text-decoration: underline;">Back Home</a>
+    {% endif %}
+</div>
+<script src="{{ url_for('static', filename='my_javascript.js') }}"></script>
+{% endblock %}

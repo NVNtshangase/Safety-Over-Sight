@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Scanned Students for Checkpoints</h2>
+    <ul class="list-group">
+        {% for checkpoint in checkpoints %}
+        <li class="list-group-item">
+            <strong>{{ checkpoint.Checkpoint_Location }}</strong> - End Time: {{ checkpoint.Checkpoint_EndTime }}
+            <a href="{{ url_for('view_scans', checkpoint_id=checkpoint.CheckpointID) }}" class="btn btn-info float-right">View Scans</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+        {% for category, message in messages %}
+            <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                {{ message }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+</div>
+
+{% endwith %}
+<script src="{{ url_for('static', filename='my_javascript.js') }}"></script>
+{% endblock %}

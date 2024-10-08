@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <h1 style="text-align: center; color: #4CAF50;">QR Code Scan for {{ checkpoint.Checkpoint_Location }}</h1>
+        <p style="text-align: center;"><strong>End Time:</strong> {{ checkpoint.Checkpoint_EndTime }}</p>
+        <p id="countdown" style="text-align: center; font-weight: bold; color: #FF0000;"></p>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="#" id="scan-button" style="text-decoration: none; color: white; background-color: #4CAF50; padding: 10px 15px; border-radius: 5px; font-size: 18px;">Start Camera</a>
+        </div>
+
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <video id="scanner-video" style="border: 1px solid #ddd; width: 60%; height: auto; max-width: 600px;"></video>
+        </div>
+
+        <div id="capture-success-modal" style="display: none; text-align: center; margin-top: 20px;">
+            <h3 style="color: green;">Capture Success!</h3>
+        </div>
+        <div id="capture-failure-modal" style="display: none; text-align: center; margin-top: 20px;">
+            <h3 style="color: red;">Invalid QR Code!</h3>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <!-- Back Button to Checkpoint List -->
+            <a href="{{ url_for('scan_checkpoints') }}" style="text-decoration: none; color: white; background-color: #f0ad4e; padding: 10px 15px; border-radius: 5px; margin-right: 10px;">Back to Checkpoints</a>
+            
+            <!-- Back to Dashboard Button -->
+            <a href="{{ url_for('dashboard') }}" style="text-decoration: none; color: white; background-color: #008CBA; padding: 10px 15px; border-radius: 5px;">Back to Dashboard</a>
+        </div>
+        
+
+        
+    </div>
+
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+    <script>
+        let endTime = new Date("{{ checkpoint.Checkpoint_EndTime }}").getTime();
+        let countdownElement = document.getElementById("countdown");
+
+        let countdownInterval = setInterval(function() {
+            let now = new Date().getTime();
+            let distance = endTime - now;
+
+            let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                countdownElement.innerHTML = "Checkpoint ended!";
+                scanner.stop();
+            }
+        }, 1000);
+
+        let scanner = new Instascan.Scanner({ video: document.getElementById('scanner-video') });
+
+        document.getElementById('scan-button').addEventListener('click', function() {
+            Instascan.Camera.getCameras().then(function(cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]);
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function(e) {
+                console.error(e);
+            });
+        });
+
+        scanner.addListener('scan', function(content) {
+            console.log("Scanned content:", content); // Debugging line to show scanned content
+            
+            fetch('/api/scan', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify({ 
+                    qrCode: content, 
+                    checkpointID: {{ checkpoint.CheckpointID }} // Ensure this is correct
+                })
+            })
+            .then(response => {
+                console.log("Response status:", response.status); // Debugging line to show response status
+                return response.json();
+            })
+            .then(data => {
+                console.log("Response data:", data); // Debugging line to show response data
+                
+                if (data.success) {
+                    document.getElementById('capture-success-modal').style.display = 'block';
+                    setTimeout(() => document.getElementById('capture-success-modal').style.display = 'none', 3000);
+                } else {
+                    document.getElementById('capture-failure-modal').style.display = 'block';
+                    setTimeout(() => document.getElementById('capture-failure-modal').style.display = 'none', 3000);
+                }
+            })
+            .catch(error => {
+                console.error("Error during fetch:", error); // Enhanced error logging
+            });
+        });
+        
+    </script>
+{% endblock %}

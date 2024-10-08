@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+                    {% for category, message in messages %}
+                        <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                            {{ message }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        
+        <h1 style="text-align: center; color: #4CAF50;">Add Checkpoint</h1>
+        <form action="{{ url_for('add_checkpoint') }}" method="POST">
+            <label for="location">Checkpoint Location:</label>
+            <input type="text" name="location" required style="width: 100%; padding: 10px; margin: 10px 0;">
+
+            <label for="end_time">Checkpoint End Time:</label>
+            <input type="text" id="datetimepicker" name="end_time" required style="width: 100%; padding: 10px; margin: 10px 0;" placeholder="Select Date and Time">
+
+            <button type="submit" style="color: white; background-color: #4CAF50; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px;">Add Checkpoint</button>
+        </form>
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{{ url_for('checkpoints') }}" style="text-decoration: none; color: white; background-color: #008CBA; padding: 10px 15px; border-radius: 5px;">Back to Checkpoints</a>
+        </div>
+    </div>
+    
+    <!-- Include Flatpickr CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <script>
+        // Get current date and time
+        const now = new Date();
+        
+        // Initialize Flatpickr
+        flatpickr("#datetimepicker", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i", // Format to match your datetime strptime format
+            minDate: now, // Set minimum date to today
+            minTime: `${now.getHours()}:${now.getMinutes()}`, // Set minimum time to the current time
+            // Optional: To prevent time selection for the rest of today after the current time
+            onOpen: function(selectedDates, dateStr, instance) {
+                const today = new Date();
+                if (selectedDates[0].toDateString() === today.toDateString()) {
+                    instance.set('minTime', `${now.getHours()}:${now.getMinutes()}`); // Prevent selection of past time today
+                } else {
+                    instance.set('minTime', "00:00"); // Reset minTime for future dates
+                }
+            }
+        });
+    </script>
+{% endblock %}

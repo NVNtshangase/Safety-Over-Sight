@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        
+
+        
+        <h1 style="text-align: center; color: #4CAF50;">Edit Checkpoint</h1>
+        <form action="{{ url_for('edit_checkpoint', checkpoint_id=checkpoint.CheckpointID) }}" method="POST">
+            <label for="location">Checkpoint Location:</label>
+            <input type="text" name="location" value="{{ checkpoint.Checkpoint_Location }}" required style="width: 100%; padding: 10px; margin: 10px 0;">
+
+            <label for="end_time">Checkpoint End Time:</label>
+            <select name="end_time" required style="width: 100%; padding: 10px; margin: 10px 0;">
+                {% for time in time_options %}
+                    <option value="{{ time }}" {% if time == checkpoint.Checkpoint_EndTime.strftime("%Y-%m-%d %H:%M") %}selected{% endif %}>{{ time }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" style="color: white; background-color: #4CAF50; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px;">Update Checkpoint</button>
+        </form>
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{{ url_for('checkpoints') }}" style="text-decoration: none; color: white; background-color: #008CBA; padding: 10px 15px; border-radius: 5px;">Back to Checkpoints</a>
+        </div>
+    </div>
+{% endblock %}

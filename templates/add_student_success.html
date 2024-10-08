@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card" style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); background-color: #f9f9f9;">
+        <h2 style="text-align: center; color: #4CAF50;">Student Added Successfully!</h2>
+        <p style="text-align: center;">Here is your child's information:</p>
+        <ul style="list-style-type: none; padding: 0; text-align: left;">
+            <li><strong>Student Name:</strong> {{ student.Student_Name }}</li>
+            <li><strong>Student Surname:</strong> {{ student.Student_Surname }}</li>
+            <li><strong>Student ID Number:</strong> {{ student.Student_ID_NO }}</li>
+        </ul>
+        <div style="text-align: center;">
+            <img src="{{ url_for('static', filename='qr_codes/' + student.Student_QR_Code) }}" alt="QR Code" style="width: 150px; height: 150px; margin-top: 10px; margin-bottom: 10px;">
+            <p>
+                <a href="{{ url_for('static', filename='qr_codes/' + student.Student_QR_Code) }}" download style="text-decoration: none; color: white; background-color: #4CAF50; padding: 10px 15px; border-radius: 5px;">Download QR Code</a>
+            </p>
+        </div>
+        <div style="text-align: center;">
+            <button onclick="location.href='{{ url_for('my_students') }}'" style="padding: 10px 15px; background-color: #008CBA; color: white; border: none; border-radius: 5px; cursor: pointer;">Close</button>
+        </div>
+    </div>
+{% endblock %}

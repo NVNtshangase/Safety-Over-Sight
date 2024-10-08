@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Records for {{ checkpoint.CheckpointName }}</title>
+    <script>
+        function printPage() {
+            // Print the page
+            window.print();
+        
+            // Display instructions based on the user's OS
+            const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+            const instructions = isMac ? 
+                "Press Command + P to print this page." : 
+                "Press Ctrl + P to print this page.";
+            
+            alert(instructions);
+        }
+        </script>
+    <style>
+        .button-container a, .button-container button {
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        
+        .button-container button {
+            padding: 10px 15px; /* Add some padding for better appearance */
+            border: 1px solid #4CAF50; /* Add a border */
+            border-radius: 5px; /* Rounded corners */
+        }
+        
+        .button-container button:hover {
+            background-color: #4CAF50; /* Change background color on hover */
+            color: white; /* Change text color on hover */
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .flash-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        a {
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+                {% for category, message in messages %}
+                    <li class="flash-message {{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        
+        <h1>Scan Records for Checkpoint: {{ checkpoint.Checkpoint_Location }}</h1>
+        
+        <!-- Table to show the list of scan records -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Scan Time</th>
+                    <th>Scan Status</th>
+                    <th>Student Name</th>
+                    <th>Student Surname</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record, student in scan_records %}
+                <tr>
+                    <td>{{ record.Scan_Time }}</td>
+                    <td>{{ record.Scan_Status }}</td>
+                    <td>{{ student.Student_Name }}</td>
+                    <td>{{ student.Student_Surname }}</td>
+                </tr>
+            {% endfor %}
+            
+        </table>
+        
+        <div class="button-container" style="margin-top: 20px;">
+            <a href="{{ url_for('scan_checkpoints') }}">Back to Checkpoints</a>
+            <a href="{{ url_for('download_pdf', checkpoint_id=checkpoint.CheckpointID) }}" style="margin-left: 20px;">Download PDF</a>
+            <button onclick="printPage()" style="margin-left: 20px;">Print</button>
+        </div>
+        
+    </div>
+</body>
+</html>

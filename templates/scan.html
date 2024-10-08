@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+                {% for category, message in messages %}
+                    <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        <h1 style="text-align: center; color: #4CAF50;">Available Checkpoints</h1>
+
+        {% if checkpoints %}
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th style="background-color: #4CAF50; color: white; padding: 10px;">Location</th>
+                        <th style="background-color: #4CAF50; color: white; padding: 10px;">End Time</th>
+                        <th style="background-color: #4CAF50; color: white; padding: 10px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for checkpoint in checkpoints %}
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 10px;">{{ checkpoint.Checkpoint_Location }}</td>
+                        <td style="padding: 10px;">{{ checkpoint.Checkpoint_EndTime }}</td>
+                        <td style="padding: 10px;">
+                            <a href="{{ url_for('qr_code_scan', checkpoint_id=checkpoint.CheckpointID) }}" style="color: white; background-color: #008CBA; padding: 5px 10px; text-decoration: none; border-radius: 5px;">Scan Now</a>
+                            <a href="{{ url_for('scan_record', checkpoint_id=checkpoint.CheckpointID) }}" style="color: white; background-color: #008CBA; padding: 5px 10px; text-decoration: none; border-radius: 5px;">View Records</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="text-align: center;">No checkpoints available for scanning.</p>
+        {% endif %}
+
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{{ url_for('dashboard') }}" style="text-decoration: none; color: white; background-color: #008CBA; padding: 10px 15px; border-radius: 5px;">Back to Dashboard</a>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='my_javascript.js') }}"></script>
+{% endblock %}

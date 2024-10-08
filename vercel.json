@@ -1,0 +1,6 @@
+{
+    "version": 2,
+    "builds": [{"src":"pupil_protect.py", "use": "@vercel/python"}],
+    "routes": [{"src":"/(.*)", "dest": "pupil_protect.py"}]
+
+}

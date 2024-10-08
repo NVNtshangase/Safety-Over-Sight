@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; padding: 30px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+            {% for category, message in messages %}
+                <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    
+    <h2 style="text-align: center; color: #1f4d7a;">Create Profile</h2>
+    
+    <form method="POST" style="margin-top: 20px;">
+        <table style="width: 100%; border-collapse: collapse;">
+            {% if current_user.role == 'Parent' %}
+                <tr>
+                    <td style="padding: 10px;">
+                        <label for="name" style="font-weight: bold; color: #333;">Name:</label>
+                    </td>
+                    <td style="padding: 10px;">
+                        <input type="text" id="name" name="name" value="{{ request.form['name'] }}" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">
+                        <label for="surname" style="font-weight: bold; color: #333;">Surname:</label>
+                    </td>
+                    <td style="padding: 10px;">
+                        <input type="text" id="surname" name="surname" value="{{ request.form['surname'] }}" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">
+                        <label for="phone_number" style="font-weight: bold; color: #333;">Phone Number:</label>
+                    </td>
+                    <td style="padding: 10px;">
+                        <input type="tel" id="phone_number" name="phone_number" value="{{ request.form['phone_number'] }}" placeholder="phone number" required style=" border: 1px solid #ccc; border-radius: 5px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">
+                        <label for="email" style="font-weight: bold; color: #333;">Email:</label>
+                    </td>
+                    <td style="padding: 10px;">
+                        <input type="email" id="email" name="email" value="{{ email }}" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background-color: #f0f0f0;">
+                    </td>
+                </tr>
+            {% elif current_user.role == 'School Authority' %}
+                <tr>
+                    <td style="padding: 10px;">
+                        <label for="authority_name" style="font-weight: bold; color: #333;">Authority Name:</label>
+                    </td>
+                    <td style="padding: 10px;">
+                        <input type="text" id="authority_name" name="authority_name" value="{{ request.form['authority_name'] }}" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">
+                        <label for="authority_surname" style="font-weight: bold; color: #333;">Authority Surname:</label>
+                    </td>
+                    <td style="padding: 10px;">
+                        <input type="text" id="authority_surname" name="authority_surname" value="{{ request.form['authority_surname'] }}" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">
+                        <label for="email" style="font-weight: bold; color: #333;">Email:</label>
+                    </td>
+                    <td style="padding: 10px;">
+                        <input type="email" id="authority_email" name="authority_email" value="{{ email }}" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background-color: #f0f0f0;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">
+                        <label for="role" style="font-weight: bold; color: #333;">Role:</label>
+                    </td>
+                    <td style="padding: 10px;">
+                        <input type="text" id="role" name="role" value="{{ request.form['role'] }}" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+        
+        <button type="submit" style="width: 100%; padding: 10px 15px; color: white; background-color: #1f4d7a; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">Create Profile</button>
+    </form>
+</div>
+<script src="{{ url_for('static', filename='my_javascript.js') }}"></script>
+<!-- Include the intl-tel-input CSS and JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<script>
+    // Initialize the phone input with country dropdown
+    var input = document.querySelector("#phone_number");
+    var iti = window.intlTelInput(input, {
+        initialCountry: "auto",
+        geoIpLookup: function(success, failure) {
+            fetch("https://ipinfo.io/json?token=<YOUR_TOKEN_HERE>")
+                .then((resp) => resp.json())
+                .then((resp) => success(resp.country))
+                .catch(() => success("us"));
+        },
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    // When the form is submitted, store the full phone number in the hidden input
+    document.querySelector("form").addEventListener("submit", function() {
+        input.value = iti.getNumber();
+    });
+</script>
+{% endblock %}

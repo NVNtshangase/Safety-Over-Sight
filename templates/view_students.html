@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul style="margin-top: 20px; padding-left: 0; list-style-type: none;">
+            {% for category, message in messages %}
+                <li class="flash-message {{ category }}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+        <h1 style="text-align: center; color: #4CAF50;">Students of {{ parent.Parent_Name }} {{ parent.Parent_Surname }}</h1>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th style="background-color: #4CAF50; color: white; padding: 10px; text-align: left;">Student Name</th>
+                    <th style="background-color: #4CAF50; color: white; padding: 10px; text-align: left;">Student ID</th>
+                    <th style="background-color: #4CAF50; color: white; padding: 10px; text-align: left;">QR Code</th>
+                    <th style="background-color: #4CAF50; color: white; padding: 10px; text-align: left;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px;">{{ student.Student_Name }} {{ student.Student_Surname }}</td>
+                    <td style="padding: 10px;">{{ student.Student_ID_NO }}</td>
+                    <td style="padding: 10px;">
+                        <img src="{{ url_for('static', filename='qr_codes/' + student.Student_QR_Code) }}" alt="QR Code" style="width: 50px; height: 50px;">
+                    </td>
+                    <td style="padding: 10px;">
+                        <form action="{{ url_for('delete_student', student_id=student.StudentID) }}" method="POST" style="display:inline;">
+                            <button type="submit" style="color: white; background-color: red; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">Delete Student</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{{ url_for('view_parents') }}" style="text-decoration: none; color: white; background-color: #008CBA; padding: 10px 15px; border-radius: 5px;">Back to Parents List</a>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='my_javascript.js') }}"></script>
+{% endblock %}
